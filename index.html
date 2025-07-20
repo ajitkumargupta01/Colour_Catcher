@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯Colour Catcher</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+        }
+
+        .game-container {
+            max-width: 600px;
+            background-color: white;
+            margin: auto;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 0 15px black;
+        }
+
+        .color-grid {
+            display: grid;
+            text-align: center;
+            grid-template-columns: repeat(4, 60px);
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .color-box {
+            width: 60px;
+            height: 60px;
+            cursor: pointer;
+            border-radius: 10px;
+            border: 2px solid #ccc;
+        }
+
+        .color-box:hover {
+            box-shadow: 0 0 9px black;
+        }
+
+        #mode {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: auto;
+            box-shadow: 1px 2px 4px black;
+            padding: 10px;
+            width: 600px;
+            border-radius: 20px;
+            margin-top: 20x;
+            margin-bottom: 20px;
+        }
+
+        #light,
+        #dark {
+            width: 50px;
+            height: 20px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        #light,
+        #dark:hover {
+            cursor: pointer;
+        }
+
+        #dark {
+            background-color: black;
+            color: white;
+        }
+
+        #light {
+            background-color: white;
+            color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="mode">
+        <div id="light">Light</div>
+        <div id="dark">Dark</div>
+    </div>
+    <div class="game-container">
+        <h1>🎯Colour Catcher</h1>
+        <p>Click on: <span id="target-color">#</span></p>
+        <div id="grid" class="color-grid">
+
+        </div>
+        <p>⏰Time Left: <span id="time">30</span>Sec</p>
+        <p>🏆Scrore: <span id="score">0</span></p>
+        <button onclick="startGame()">Start Game</button>
+    </div>
+
+
+    <script>
+        let targetColor = "";
+        let score = 0;
+        let time = 30;
+        let timer;
+        let color = ["black", "white", "red", "green", "blue", "yellow", "cyan", "magenta", "gray", "orange", "purple", "pink", "brown", "lime", "navy", "teal"];
+        const grid = document.getElementById('grid');
+        const targetColorDisplay = document.getElementById('target-color');
+        const scoreDisplay = document.getElementById('score');
+        const timeDisplay = document.getElementById('time');
+
+        function shuffleArray(color) {
+            for (let i = color.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [color[i], color[j]] = [color[j], color[i]];
+            }
+            return color;
+        }
+
+        function createGrid() {
+            grid.innerHTML = "";
+            color = shuffleArray(color);
+            targetColor = color[Math.floor(Math.random() * 16)];
+            targetColorDisplay.textContent = targetColor;
+            color.forEach((color) => {
+                const box = document.createElement("div");
+                box.className = "color-box";
+                box.style.backgroundColor = color;
+                box.addEventListener('click', () => {
+                    handleClick(color)
+                });
+                grid.append(box);
+            });
+        }
+
+        function handleClick(clickColor) {
+            if (clickColor === targetColor) {
+                score++;
+                scoreDisplay.textContent = score;
+                createGrid();
+            }
+        }
+
+        function startGame() {
+            score = 0;
+            time = 30;
+            scoreDisplay.textContent = score;
+            timeDisplay.textContent = time;
+            createGrid();
+            clearInterval(timer);
+            timer = setInterval(() => {
+                time--;
+                timeDisplay.textContent = time;
+                if (time === 0) {
+                    clearInterval(timer);
+                    alert("⏳Time's up!\n🥇Your Final score: " + score);
+                }
+            }, 1000);
+        }
+        let darkButton = document.getElementById('dark');
+        let lightButton = document.getElementById('light');
+        lightButton.addEventListener('click', lightMode);
+        darkButton.addEventListener('click', darkMode);
+        function lightMode() {
+            document.body.style.backgroundColor = "#f0f0f0";
+            let gc = document.querySelector('.game-container');
+            gc.style.backgroundColor = 'white';
+            gc.style.color = 'black';
+            document.getElementById('mode').style.boxShadow = "1px 2px 4px black";
+        }
+        function darkMode() {
+            document.body.style.backgroundColor = "#333333";
+            let gc = document.querySelector('.game-container');
+            gc.style.backgroundColor = 'black';
+            gc.style.color = 'white';
+            document.getElementById('mode').style.boxShadow = "1px 2px 4px white";
+        }
+    </script>
+</body>
+
+</html>
